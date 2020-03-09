@@ -51,20 +51,19 @@ const steps = {
         const finalMessage = messageParts.join('\n');
 
         console.log([
-            'The message to be sent:',
-            '------------------------',
-                finalMessage,
-            '------------------------'
+            '---',
+            '[The message to be sent]:',
+            finalMessage,
         ].join('\n'));
 
         const squadManager = new SquadManager();
         const res = squadManager.readMessage(finalMessage);
 
         console.log([
-            'Rovers Squad Manager - Response:',
-            '------------------------',
+            '---',
+            '[Rovers Squad Manager - Response]:',
                 res,
-            '------------------------'
+            '---'
         ].join('\n'));
 
         return steps.end();
