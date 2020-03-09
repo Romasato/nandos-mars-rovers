@@ -19,12 +19,6 @@ const steps = {
     start: async () => {
         return steps.startNewExploration();
     },
-    askAboutExploration: async () => {
-        const answer = await question('Would you send Rovers to explore Mars? Please type yes/no: ');
-        if (answer === 'yes') { return steps.startNewExploration(); }
-        console.log('Maybe in another century then. Laters!');
-        return steps.end();
-    },
     startNewExploration: async () => {
         console.log([
             'Hello there!',
