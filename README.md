@@ -75,11 +75,11 @@ Below are the constraints under which the Mars Exploration program was coded.
 * Both **Rover** and **SM**, as per spec, understand and have only string-based messaging interface exposed. They can accept and return only string messages - nothing else (meaning: no direct class method execution!).
 * **SM** is the only one that knows about grid size and deployed rovers and controls their movements - rovers do not know about each other.
 * As per specification, Rovers do not know about the size of the grid (plateau). Only **SM** does.
-* The single message sent to **SM** is first parsed and validated before commands are sent to the deployed rovers.
-* **Rover** instances understand only the 2-line (new line-delimited) string command containing _coordinates_, _heading_ info and _movement_ commands. 
+* The single multi-line message sent to **SM** is first parsed and validated before commands are sent to the deployed rovers.
+* **Rover** instances understand only the 2-line (new line-delimited) string messages containing _coordinates_, _heading_ info and _movement_ commands. 
 * Before sending movement commands to rovers, **SM** checks if they would result in out-of-bounds exploration regarding the given plateau size. If that is the case, an error is returned and commands are not sent to any of the rovers.
-* Two **Rovers** cannot co-exist nor be deployed at the same coordinates.
-* Therefore a **Rover** while exploring cannot cross a coordinate where another Rover is currently deployed or has already finished exploring.
+* Two **Rovers** CANNOT co-exist nor be deployed at the same coordinates.
+* Therefore a **Rover** while exploring cannot cross a coordinate where another Rover is currently deployed or had already finished exploring.
 
 # Implementation
 The application was coded in TypeScript and running on Node.js. 
@@ -88,13 +88,14 @@ Unit tests are run with Mocha and Chai for assertions.
 ## Directory Tree
 
 ```
-src/                    --> Front-end web SPA sources and assets
+src/                    --> Source Files
     ErrorTypes.ts       --> Contains different error types that SM can return.
     index.ts            --> Command Line UI to construct messages and receive responses from SM.
     NavModule.ts        --> Navigation Module Class.
     Rover.ts            --> Rover Class.
     SquadManager.ts     --> Rovers Squad Manager Class.
     types.ts            --> Common shared Typescript types.
+tests/                  --> Unit tests.
 package.json            --> NPM package file
 tsconfig.json           --> TypeScript config 
 ```
@@ -105,13 +106,15 @@ There are 3 main classes
 | Class         | Purpose       |
 | ------------- | ------------- |
 | SquadManager  | Receives the master messages, validates, then deploys Rovers sends them relevant commands.  |
-| Rover         | Receives messages from Squad Manager, validates them and executes given commands. |
+| Rover         | Receives messages from Squad Manager, validates them and executes given commands returning message with final coordinates or errors to SM. |
 | NavModule     | Common navigation module used by both SquadManager and Rovers to predict and move around the coordinates. |
 
 
 ## Running program and tests
 
-To run the program execute the following commands.
+To run the program or unit tests, a Node.js v12.x is required to be installed.
+
+Then install the required packages:
 ```shell script
 npm ci
 ```
