@@ -68,18 +68,36 @@ Which brings in other considerations:
 * Can Rovers start from the same position? (Given rovers move one after another, maybe one lands first before another does?)
 * And can a Rover pass through a grid point in which another Rover is already standing after finishing exploring?
 
-# Implementation
-
-## Constraints 
+# Implemented Constraints 
 Below are the constraints under which the Mars Exploration program was coded.
 
 * Rovers are controlled by a **Squad Manager** (SM) instance. Imagine, SM could be in a satellite orbiting Mars, so close to the deployed rovers to pass on the commands.
-* Both **Rover** and **SM**, as per spec, understand and have only string-based messaging interface exposed. They can accept and return only string messages - nothing else.
+* Both **Rover** and **SM**, as per spec, understand and have only string-based messaging interface exposed. They can accept and return only string messages - nothing else (meaning: no direct class method execution!).
 * **SM** is the only one that knows about grid size and deployed rovers and controls their movements - rovers do not know about each other.
 * As per specification, Rovers do not know about the size of the grid (plateau). Only **SM** does.
 * The single message sent to **SM** is first parsed and validated before commands are sent to the deployed rovers.
 * **Rover** instances understand only the 2-line (new line-delimited) string command containing _coordinates_, _heading_ info and _movement_ commands. 
 * Before sending movement commands to rovers, **SM** checks if they would result in out-of-bounds exploration regarding the given plateau size. If that is the case, an error is returned and commands are not sent to any of the rovers.
+* Two **Rovers** cannot co-exist nor be deployed at the same coordinates.
+* Therefore a **Rover** while exploring cannot cross a coordinate where another Rover is currently deployed or has already finished exploring.
+
+# Implementation
+The application was coded in TypeScript and running on Node.js. 
+Unit tests are run with Mocha and Chai for assertions.
+
+## Directory Tree
+
+```
+src/                    --> Front-end web SPA sources and assets
+    ErrorTypes.ts       --> Contains different error types that SM can return.
+    index.ts            --> Command Line UI to construct messages and receive responses from SM.
+    NavModule.ts        --> Navigation Module Class.
+    Rover.ts            --> Rover Class.
+    SquadManager.ts     --> Rovers Squad Manager Class.
+    types.ts            --> Common shared Typescript types.
+package.json            --> NPM package file
+tsconfig.json           --> TypeScript config 
+```
 
 ## Classes
 There are 3 main classes
@@ -90,5 +108,22 @@ There are 3 main classes
 | Rover         | Receives messages from Squad Manager, validates them and executes given commands. |
 | NavModule     | Common navigation module used by both SquadManager and Rovers to predict and move around the coordinates. |
 
+
+## Running program and tests
+
+To run the program execute the following commands.
+```shell script
+npm ci
+```
+
+Then to run the program to input messages and see the output:
+```shell script
+npm start
+```
+
+To run the unit tests, execute:
+```shell script
+npm run test
+```
 
 
